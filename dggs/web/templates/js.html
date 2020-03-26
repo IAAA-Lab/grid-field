@@ -1,0 +1,186 @@
+<script type="text/javascript">
+
+  function applyMargins() {
+    var leftToggler = $(".mini-submenu-left");
+    if (leftToggler.is(":visible")) {
+      $("#map .ol-zoom")
+        .css("margin-left", 0)
+        .removeClass("zoom-top-opened-sidebar")
+        .addClass("zoom-top-collapsed");
+    } else {
+      $("#map .ol-zoom")
+        .css("margin-left", $(".sidebar-left").width())
+        .removeClass("zoom-top-opened-sidebar")
+        .removeClass("zoom-top-collapsed");
+    }
+  }
+
+  function isConstrained() {
+    return $(".sidebar").width() == $(window).width();
+  }
+
+  function applyInitialUIState() {
+    if (isConstrained()) {
+      $(".sidebar-left .sidebar-body").fadeOut('slide');
+      $('.mini-submenu-left').fadeIn();
+    }
+  }
+
+  $(function(){
+
+    $('.sidebar-left .slide-submenu').on('click',function() {
+      var thisEl = $(this);
+      thisEl.closest('.sidebar-body').fadeOut('slide',function(){
+        $('.mini-submenu-left').fadeIn();
+        applyMargins();
+      });
+    });
+
+    $('.mini-submenu-left').on('click',function() {
+      var thisEl = $(this);
+      $('.sidebar-left .sidebar-body').toggle('slide');
+      thisEl.hide();
+      applyMargins();
+    });
+
+    $(window).on("resize", applyMargins);
+    applyInitialUIState();
+    applyMargins();
+
+
+
+
+
+<!----  Ny addition below from here>
+
+
+
+<!--    var cells = {{ grid|safe }}-->
+<!--    vectorSource = new ol.source.Vector({-->
+<!--        features: (new ol.format.GeoJSON()).readFeatures(cells, {dataProjection: 'EPSG:4326',featureProjection: 'EPSG:4326'})-->
+<!--    });-->
+<!--    vectorLayer = new ol.layer.Vector({-->
+<!--        source: vectorSource-->
+<!--    });-->
+
+<!--    var vectorLyr = new ol.layer.Vector({-->
+<!--      source: new ol.source.Vector({-->
+<!--        url: 'geojson',-->
+<!--        format: new ol.format.GeoJSON()-->
+<!--      })-->
+<!--    })-->
+
+
+<!--    var vectorLayerJSON = new ol.layer.Vector({-->
+<!--        renderMode: 'image',-->
+<!--        source: new ol.source.Vector({-->
+<!--            loader: function() {-->
+<!--                $.ajax({-->
+<!--                    type: 'GET',-->
+<!--                    url: 'http://127.0.0.1:8000/geojson',-->
+<!--                    context: this-->
+<!--                }).done(function(data) {-->
+<!--                    console.log(data)-->
+<!--                    var format = new ol.format.GeoJSON();-->
+<!--                    this.addFeatures(format.readFeatures(data));-->
+<!--                });-->
+<!--            }-->
+<!--        })-->
+<!--    });-->
+
+
+    var rasterBaseMapOSM = new ol.layer.Tile({
+        source: new ol.source.OSM()
+    });
+
+
+    var geoJsonFormat = new ol.format.GeoJSON();
+    var vectorSource = null;
+
+    function loaderFunction(extent, resolution, projection) {
+        var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
+<!--        var url = "geojsonlvl8" + extent.join(',');-->
+        var url = "geojsonlvl8";
+        $.ajax({
+            url: url,
+            success: function (data) {
+                var features = geoJsonFormat.readFeatures(data, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: 'EPSG:4326'
+                });
+          vectorSource.clear(true);
+          vectorSource.addFeatures(features);
+        }
+        });
+    }
+
+    vectorSource = new ol.source.Vector({
+      format: geoJsonFormat,
+      loader: loaderFunction,
+      projection: 'EPSG:4326',
+      strategy: ol.loadingstrategy.bbox
+    });
+
+    var vectorGridLayerLvl8 =  new ol.layer.Vector({
+      source: vectorSource
+   })
+
+    var vectorGridLayerLvl9 = new ol.layer.Vector({
+      source: new ol.source.Vector({
+        url: 'geojson_lvl9',
+        format: new ol.format.GeoJSON()
+      })
+    })
+
+
+
+
+
+
+
+
+
+    var map = new ol.Map({
+    target: 'map',
+    layers: [rasterBaseMapOSM, vectorGridLayerLvl8, vectorGridLayerLvl9],
+    view: new ol.View({
+        center: [0, 0],
+        zoom: 4,
+        projection: 'EPSG:4326'
+        })
+    });
+
+
+    function onMoveEnd(evt) {
+        var zLevel = map.getView().getZoom();
+        var zoomInfo = 'Zoom level = ' + zLevel;
+        console.log(zoomInfo);
+
+        if( zLevel > 11 && zLevel < 12 )
+        {
+            vectorGridLayerLvl8.setVisible(true);
+        }
+        else
+        {
+            vectorGridLayerLvl8.setVisible(false);
+        }
+
+<!--        var map = evt.map;-->
+<!--        var extent = map.getView().calculateExtent(map.getSize());-->
+<!--        var bottomLeft = toLonLat(getBottomLeft(extent));-->
+<!--        var topRight = toLonLat(getTopRight(extent));-->
+<!--        display('left', wrapLon(bottomLeft[0]));-->
+<!--        display('bottom', bottomLeft[1]);-->
+<!--        display('right', wrapLon(topRight[0]));-->
+<!--        display('top', topRight[1]);-->
+    };
+
+    map.on('moveend', onMoveEnd);
+
+
+<!-- My addition ends here-->
+
+});
+
+
+</script>
