@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.contrib.gis.geos import Polygon
 
 # Create your views here.
 from django.shortcuts import render
@@ -11,7 +11,14 @@ def default_map(request):
     return render(request, 'default.html', {})
 
 def geojson_lvl8(request):
-    data_as_geojson = serialize('geojson', list(Res8Wgs84.objects.all()))
+    if request.GET.get('bbox', None):
+        bbox = request.GET.get('bbox', None).strip()
+        print("value is ", bbox)
+
+        minx, miny, maxx, maxy = [float(i) for i in bbox.split(",")]
+        extent = Polygon(((minx,miny),(minx,maxy),(maxx,maxy),(maxx,miny),(minx,miny)),  srid=4326)
+
+    data_as_geojson = serialize('geojson', list(Res8Wgs84.objects.filter(geom__bboverlaps=extent)))
     return HttpResponse(data_as_geojson, content_type='json')
 
 

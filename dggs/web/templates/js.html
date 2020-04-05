@@ -54,88 +54,114 @@
 <!----  Ny addition below from here>
 
 
-
-<!--    var cells = {{ grid|safe }}-->
-<!--    vectorSource = new ol.source.Vector({-->
-<!--        features: (new ol.format.GeoJSON()).readFeatures(cells, {dataProjection: 'EPSG:4326',featureProjection: 'EPSG:4326'})-->
-<!--    });-->
-<!--    vectorLayer = new ol.layer.Vector({-->
-<!--        source: vectorSource-->
-<!--    });-->
-
-<!--    var vectorLyr = new ol.layer.Vector({-->
-<!--      source: new ol.source.Vector({-->
-<!--        url: 'geojson',-->
-<!--        format: new ol.format.GeoJSON()-->
-<!--      })-->
-<!--    })-->
-
-
-<!--    var vectorLayerJSON = new ol.layer.Vector({-->
-<!--        renderMode: 'image',-->
-<!--        source: new ol.source.Vector({-->
-<!--            loader: function() {-->
-<!--                $.ajax({-->
-<!--                    type: 'GET',-->
-<!--                    url: 'http://127.0.0.1:8000/geojson',-->
-<!--                    context: this-->
-<!--                }).done(function(data) {-->
-<!--                    console.log(data)-->
-<!--                    var format = new ol.format.GeoJSON();-->
-<!--                    this.addFeatures(format.readFeatures(data));-->
-<!--                });-->
-<!--            }-->
-<!--        })-->
-<!--    });-->
-
-
     var rasterBaseMapOSM = new ol.layer.Tile({
         source: new ol.source.OSM()
     });
 
 
     var geoJsonFormat = new ol.format.GeoJSON();
-    var vectorSource = null;
 
-    function loaderFunction(extent, resolution, projection) {
+    function grid8loaderFunction(extent, resolution, projection) {
         var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
-<!--        var url = "geojsonlvl8" + extent.join(',');-->
+
+        console.log(extent.join(','))
+
         var url = "geojsonlvl8";
         $.ajax({
             url: url,
+            data: {
+			  'bbox':  extent.join(',')
+			},
+			dataType: 'json',
             success: function (data) {
+                console.log(data)
                 var features = geoJsonFormat.readFeatures(data, {
                     dataProjection: 'EPSG:4326',
                     featureProjection: 'EPSG:4326'
                 });
-          vectorSource.clear(true);
-          vectorSource.addFeatures(features);
-        }
+                vectorSource8.clear(true);
+                vectorSource8.addFeatures(features);
+            },
+            error:function(xhr, ajaxOptions, thrownError) {
+              console.log("this is error")
+                alert(xhr.status)
+            },
         });
     }
 
-    vectorSource = new ol.source.Vector({
+
+    function grid9loaderFunction(extent, resolution, projection) {
+        var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
+
+        console.log(extent.join(','))
+
+        var url = "geojsonlvl9";
+<!--        var url = getur();-->
+        $.ajax({
+            url: url,
+            data: {
+			  'bbox':  extent.join(',')
+			},
+			dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                var features = geoJsonFormat.readFeatures(data, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: 'EPSG:4326'
+                });
+                vectorSource9.clear(true);
+                vectorSource9.addFeatures(features);
+            },
+            error:function(xhr, ajaxOptions, thrownError) {
+              console.log("this is error")
+                alert(xhr.status)
+            },
+        });
+    }
+
+
+    vectorSource8 = new ol.source.Vector({
       format: geoJsonFormat,
-      loader: loaderFunction,
+      loader: grid8loaderFunction,
       projection: 'EPSG:4326',
       strategy: ol.loadingstrategy.bbox
     });
 
-    var vectorGridLayerLvl8 =  new ol.layer.Vector({
-      source: vectorSource
-   })
+    vectorSource9 = new ol.source.Vector({
+      format: geoJsonFormat,
+      loader: grid9loaderFunction,
+      projection: 'EPSG:4326',
+      strategy: ol.loadingstrategy.bbox
+<!--       strategy: if(this.resolution && this.resolution != resolution){-->
+<!--                        this.loadedExtentsRtree_.clear();-->
+<!--                    }-->
+<!--                    return [extent];-->
+<!--                }-->
+    });
 
-    var vectorGridLayerLvl9 = new ol.layer.Vector({
-      source: new ol.source.Vector({
-        url: 'geojson_lvl9',
-        format: new ol.format.GeoJSON()
-      })
+    var vectorGridLayerLvl8 =  new ol.layer.Vector({
+<!--      minZoom: 11,-->
+<!--      maxZoom:13,-->
+      source: vectorSource8
     })
 
 
+    var vectorGridLayerLvl9 = new ol.layer.Vector({
+<!--      minZoom: 13,-->
+<!--      maxZoom:15,-->
+      source: vectorSource9
+    })
 
 
-
+    var highlightStyle = new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255,255,255,0.7)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: '#3399CC',
+        width: 3
+      })
+    });
 
 
 
@@ -144,35 +170,76 @@
     target: 'map',
     layers: [rasterBaseMapOSM, vectorGridLayerLvl8, vectorGridLayerLvl9],
     view: new ol.View({
-        center: [0, 0],
-        zoom: 4,
+        center: [-2.206132113948761,41.13498145407611],
+        zoom: 7,
         projection: 'EPSG:4326'
         })
     });
 
+<!--    map.getView().on('change:resolution', function(evt){-->
+<!--        vectorSource.clear();-->
+<!--    });-->
+
+    var selected = [];
+
+    map.on('singleclick', function(e) {
+      map.forEachFeatureAtPixel(e.pixel, function(f) {
+        var selIndex = selected.indexOf(f);
+        if (selIndex < 0) {
+            console.log(f)
+          selected.push(f);
+          f.setStyle(highlightStyle);
+        } else {
+          selected.splice(selIndex, 1);
+          f.setStyle(undefined);
+        }
+        console.log(selected)
+      });
+    });
+
+    vectorGridLayerLvl8.setVisible(false);
+    vectorGridLayerLvl9.setVisible(false);
+
+
+<!--    function getur(evt) {-->
+
+<!--        console.log("in get ur");-->
+<!--        var zLevel = map.getView().getZoom();-->
+
+<!--        if( zLevel > 11 && zLevel < 12 )-->
+<!--        {-->
+<!--            return "geojsonlvl8";-->
+<!--        }-->
+<!--        else if( zLevel > 12 && zLevel < 13 )-->
+<!--        {-->
+<!--            return "geojsonlvl8";-->
+<!--        }-->
+<!--        else-->
+<!--        {-->
+<!--            return "geojsonlvl8";-->
+<!--        }-->
+<!--    };-->
 
     function onMoveEnd(evt) {
         var zLevel = map.getView().getZoom();
         var zoomInfo = 'Zoom level = ' + zLevel;
         console.log(zoomInfo);
 
-        if( zLevel > 11 && zLevel < 12 )
+        if( zLevel > 11 && zLevel < 13 )
         {
             vectorGridLayerLvl8.setVisible(true);
+            vectorGridLayerLvl9.setVisible(false);
+        }
+        else if( zLevel > 13 && zLevel < 15 )
+        {
+            vectorGridLayerLvl9.setVisible(true);
+            vectorGridLayerLvl8.setVisible(false);
         }
         else
         {
             vectorGridLayerLvl8.setVisible(false);
+            vectorGridLayerLvl9.setVisible(false);
         }
-
-<!--        var map = evt.map;-->
-<!--        var extent = map.getView().calculateExtent(map.getSize());-->
-<!--        var bottomLeft = toLonLat(getBottomLeft(extent));-->
-<!--        var topRight = toLonLat(getTopRight(extent));-->
-<!--        display('left', wrapLon(bottomLeft[0]));-->
-<!--        display('bottom', bottomLeft[1]);-->
-<!--        display('right', wrapLon(topRight[0]));-->
-<!--        display('top', topRight[1]);-->
     };
 
     map.on('moveend', onMoveEnd);
