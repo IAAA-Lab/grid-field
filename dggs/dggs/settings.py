@@ -25,7 +25,7 @@ SECRET_KEY = '06ab9^xxta!clx_)yf5zxpmdzw_5ouf^i-#^_%$_042d1+)ku='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost',"10.1.62.109", "192.168.0.141", "192.168.0.7", '172.17.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'dggs.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'dggs',
-        'USER': 'postgres',
-        'PASSWORD': 'umer',
+        'NAME': 'db_name',
+        'USER': 'user',
+        'PASSWORD': 'user',
         'HOST': 'localhost',
-        'PORT': '54320'
+        'PORT': '5432'
     }
 }
 
