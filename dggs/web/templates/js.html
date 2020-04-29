@@ -164,6 +164,7 @@
 
 
     var map = new ol.Map({
+    moveTolerance:6,
     target: 'map',
     layers: [rasterBaseMapOSM, vectorGridLayerLvl8, vectorGridLayerLvl9],
     view: new ol.View({
@@ -193,6 +194,7 @@
     vectorGridLayerLvl8.setVisible(false);
     vectorGridLayerLvl9.setVisible(false);
 
+    var activeLayer;
 
     function onMoveEnd(evt) {
         var zLevel = map.getView().getZoom();
@@ -203,11 +205,13 @@
         {
             vectorGridLayerLvl8.setVisible(true);
             vectorGridLayerLvl9.setVisible(false);
+            activeLayer = vectorGridLayerLvl8;
         }
         else if( zLevel > 13 && zLevel < 15 )
         {
             vectorGridLayerLvl9.setVisible(true);
             vectorGridLayerLvl8.setVisible(false);
+            activeLayer = vectorGridLayerLvl9;
         }
         else
         {
@@ -224,16 +228,14 @@
       useSpatialIndex : false
     });
 
-
     /* Add drawing layer */
     var drawingLayer = new ol.layer.Vector({
       source: drawingSource
     });
     map.addLayer(drawingLayer);
 
-    /* Declare interactions and listener globally so we
-     can attach listeners to them later. */
-    var sketch; //the current drawing
+    /* Declare interactions and listener globally so we can attach listeners to them later. */
+    var sketch;
     var draw;
     var listener;
 
@@ -241,39 +243,38 @@
     draw = new ol.interaction.Draw({
       source : drawingSource,
       type : "Polygon",
-      condition : ol.events.condition.touchOnly
+      clickTolerance:6
     });
+
     map.addInteraction(draw);
 
     /* add ol.collection to hold all selected features */
-    var select = new ol.interaction.Select();
+    var select = new ol.interaction.Select({ });
     map.addInteraction(select);
     var selectedFeatures = select.getFeatures();
 
 
-
     draw.on("drawstart",function(event){
 
-      drawingSource.clear();
-      select.setActive(false);
-      selectedFeatures.clear();
+        drawingSource.clear();
+        select.setActive(false);
+        selectedFeatures.clear();
     },this);
 
     draw.on("drawend", function(event) {
 
-      delaySelectActivate();
-      selectedFeatures.clear();
+        selectedFeatures.clear();
 
-      var polygon = event.feature.getGeometry();
-      var features = vectorGridLayerLvl8.getSource().getFeatures();
+        var polygon = event.feature.getGeometry();
+        var features = activeLayer.getSource().getFeatures();
 
-      for (var i = 0 ; i < features.length; i++){
+        for (var i = 0 ; i < features.length; i++){
         if(polygon.intersectsExtent( features[i].getGeometry().getExtent() )){
           selectedFeatures.push(features[i]);
         }
-      }
-      /* clear drawn polygone after selecting features */
-      drawingLayer.clear();
+        }
+        /* clear drawn polygone after selecting features */
+        drawingLayer.clear();
     });
 
     function delaySelectActivate(){
@@ -287,6 +288,7 @@
 
 
 });
+
 
 
 </script>
