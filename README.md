@@ -4,11 +4,14 @@ An app to collect georeferenced data in the field based on a Discrete Global Gri
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install dependencies from the requirements.txt file. It is recommended to create a separate Python3 virtual environment first to avoid complexities and dependencies issues.   
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install dependencies from the requirements.txt file. It is recommended to create a separate Python3 virtual environment first to avoid complexities and dependencies issues. 
 
-```bash
-pip install -r requirements.txt
-```
+Tested in Ubuntu 18.04:
+
+- Create a virtual environment: `python3 -m venv ./venv/grid-field-env`. You may need to install the `python3-venv` package. Make sure to create your environment inside of a venv or env directory, like shown, so git will ignore it.
+- Activate the virtual environment: `source ./venv/grid-field-env/bin/activate`.
+- Install the requirements in your virtual environment: `pip install -r requirements.txt`. You may need to install the `libpq-dev` package in your system.
+
 
 ## Configuration & Usage
 
@@ -34,4 +37,3 @@ python manage.py runserver
 
 
 ## License
---
