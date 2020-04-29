@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'dggs.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'db_name',
-        'USER': 'user',
-        'PASSWORD': 'user',
+        'NAME': 'postgres',
+        'USER': 'docker',
+        'PASSWORD': 'docker',
         'HOST': 'localhost',
-        'PORT': '5432'
+        'PORT': '25432'
     }
 }
 
