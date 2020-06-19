@@ -175,21 +175,21 @@
     });
 
 
-<!--    var selected = [];-->
-<!--    map.on('singleclick', function(e) {-->
-<!--      map.forEachFeatureAtPixel(e.pixel, function(f) {-->
-<!--        var selIndex = selected.indexOf(f);-->
-<!--        if (selIndex < 0) {-->
-<!--            console.log(f)-->
-<!--          selected.push(f);-->
-<!--          f.setStyle(highlightStyle);-->
-<!--        } else {-->
-<!--          selected.splice(selIndex, 1);-->
-<!--          f.setStyle(undefined);-->
-<!--        }-->
-<!--        console.log(selected)-->
-<!--      });-->
-<!--    });-->
+    var selected = [];
+    map.on('singleclick', function(e) {
+      map.forEachFeatureAtPixel(e.pixel, function(f) {
+        var selIndex = selected.indexOf(f);
+        if (selIndex < 0) {
+            console.log(f)
+          selected.push(f);
+          f.setStyle(highlightStyle);
+        } else {
+          selected.splice(selIndex, 1);
+          f.setStyle(undefined);
+        }
+        console.log(selected)
+      });
+    });
 
     vectorGridLayerLvl8.setVisible(false);
     vectorGridLayerLvl9.setVisible(false);
@@ -223,65 +223,65 @@
     map.on('moveend', onMoveEnd);
 
 
-    /* Add drawing vector source */
-    var drawingSource = new ol.source.Vector({
-      useSpatialIndex : false
-    });
+<!--    /* Add drawing vector source */-->
+<!--    var drawingSource = new ol.source.Vector({-->
+<!--      useSpatialIndex : false-->
+<!--    });-->
 
-    /* Add drawing layer */
-    var drawingLayer = new ol.layer.Vector({
-      source: drawingSource
-    });
-    map.addLayer(drawingLayer);
+<!--    /* Add drawing layer */-->
+<!--    var drawingLayer = new ol.layer.Vector({-->
+<!--      source: drawingSource-->
+<!--    });-->
+<!--    map.addLayer(drawingLayer);-->
 
-    /* Declare interactions and listener globally so we can attach listeners to them later. */
-    var sketch;
-    var draw;
-    var listener;
+<!--    /* Declare interactions and listener globally so we can attach listeners to them later. */-->
+<!--    var sketch;-->
+<!--    var draw;-->
+<!--    var listener;-->
 
-    // Drawing interaction
-    draw = new ol.interaction.Draw({
-      source : drawingSource,
-      type : "Polygon",
-      clickTolerance:6
-    });
+<!--    // Drawing interaction-->
+<!--    draw = new ol.interaction.Draw({-->
+<!--      source : drawingSource,-->
+<!--      type : "Polygon",-->
+<!--      clickTolerance:6-->
+<!--    });-->
 
-    map.addInteraction(draw);
+<!--    map.addInteraction(draw);-->
 
-    /* add ol.collection to hold all selected features */
-    var select = new ol.interaction.Select({ });
-    map.addInteraction(select);
-    var selectedFeatures = select.getFeatures();
+<!--    /* add ol.collection to hold all selected features */-->
+<!--    var select = new ol.interaction.Select({ });-->
+<!--    map.addInteraction(select);-->
+<!--    var selectedFeatures = select.getFeatures();-->
 
 
-    draw.on("drawstart",function(event){
+<!--    draw.on("drawstart",function(event){-->
 
-        drawingSource.clear();
-        select.setActive(false);
-        selectedFeatures.clear();
-    },this);
+<!--        drawingSource.clear();-->
+<!--        select.setActive(false);-->
+<!--        selectedFeatures.clear();-->
+<!--    },this);-->
 
-    draw.on("drawend", function(event) {
+<!--    draw.on("drawend", function(event) {-->
 
-        selectedFeatures.clear();
+<!--        selectedFeatures.clear();-->
 
-        var polygon = event.feature.getGeometry();
-        var features = activeLayer.getSource().getFeatures();
+<!--        var polygon = event.feature.getGeometry();-->
+<!--        var features = activeLayer.getSource().getFeatures();-->
 
-        for (var i = 0 ; i < features.length; i++){
-        if(polygon.intersectsExtent( features[i].getGeometry().getExtent() )){
-          selectedFeatures.push(features[i]);
-        }
-        }
-        /* clear drawn polygone after selecting features */
-        drawingLayer.clear();
-    });
+<!--        for (var i = 0 ; i < features.length; i++){-->
+<!--        if(polygon.intersectsExtent( features[i].getGeometry().getExtent() )){-->
+<!--          selectedFeatures.push(features[i]);-->
+<!--        }-->
+<!--        }-->
+<!--        /* clear drawn polygone after selecting features */-->
+<!--        drawingLayer.clear();-->
+<!--    });-->
 
-    function delaySelectActivate(){
-      setTimeout(function(){
-        select.setActive(true)
-      },300);
-    }
+<!--    function delaySelectActivate(){-->
+<!--      setTimeout(function(){-->
+<!--        select.setActive(true)-->
+<!--      },300);-->
+<!--    }-->
 
 
 <!-- My addition ends here-->
