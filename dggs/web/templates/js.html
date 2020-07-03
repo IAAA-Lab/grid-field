@@ -62,7 +62,7 @@
     function grid8loaderFunction(extent, resolution, projection) {
         var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
 
-        console.log(extent.join(','))
+<!--        console.log(extent.join(','))-->
 
         var url = "geojsonlvl8";
         $.ajax({
@@ -91,10 +91,9 @@
     function grid9loaderFunction(extent, resolution, projection) {
         var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
 
-        console.log(extent.join(','))
+<!--        console.log(extent.join(','))-->
 
         var url = "geojsonlvl9";
-<!--        var url = getur();-->
         $.ajax({
             url: url,
             data: {
@@ -175,19 +174,20 @@
     });
 
 
-    var selected = [];
+    var selected_cells = [];
+
     map.on('singleclick', function(e) {
       map.forEachFeatureAtPixel(e.pixel, function(f) {
-        var selIndex = selected.indexOf(f);
+        var selIndex = selected_cells.indexOf(f.values_);
+        console.log(f.values_)
         if (selIndex < 0) {
-            console.log(f)
-          selected.push(f);
+          selected_cells.push(f.values_);
           f.setStyle(highlightStyle);
         } else {
-          selected.splice(selIndex, 1);
+          selected_cells.splice(selIndex, 1);
           f.setStyle(undefined);
         }
-        console.log(selected)
+        console.log(selected_cells)
       });
     });
 
@@ -199,7 +199,7 @@
     function onMoveEnd(evt) {
         var zLevel = map.getView().getZoom();
         var zoomInfo = 'Zoom level = ' + zLevel;
-        console.log(zoomInfo);
+<!--        console.log(zoomInfo);-->
 
         if( zLevel > 11 && zLevel < 13 )
         {
@@ -242,7 +242,7 @@
 <!--    // Drawing interaction-->
 <!--    draw = new ol.interaction.Draw({-->
 <!--      source : drawingSource,-->
-<!--      type : "Polygon",-->
+<!--      type : "Point",-->
 <!--      clickTolerance:6-->
 <!--    });-->
 
@@ -258,12 +258,12 @@
 
 <!--        drawingSource.clear();-->
 <!--        select.setActive(false);-->
-<!--        selectedFeatures.clear();-->
+<!--&lt;!&ndash;        selectedFeatures.clear();&ndash;&gt;-->
 <!--    },this);-->
 
 <!--    draw.on("drawend", function(event) {-->
 
-<!--        selectedFeatures.clear();-->
+<!--&lt;!&ndash;        selectedFeatures.clear();&ndash;&gt;-->
 
 <!--        var polygon = event.feature.getGeometry();-->
 <!--        var features = activeLayer.getSource().getFeatures();-->
@@ -284,7 +284,35 @@
 <!--    }-->
 
 
+<!-- Callback functions-->
+
+    $(function() {
+        $("#addRecordcallback").click(function(e) {
+            e.preventDefault();
+            console.log(selected_cells);
+
+            var url = "ajax/addrecordcallback/";
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify(selected_cells),
+                headers:{
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    console.log("data...")
+                },
+                error:function(xhr, ajaxOptions, thrownError) {
+                  console.log("this is error")
+                    alert(xhr.status)
+                },
+            });
+        });
+    });
+
 <!-- My addition ends here-->
+
 
 
 });

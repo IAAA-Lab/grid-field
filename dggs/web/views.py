@@ -1,10 +1,11 @@
 from django.contrib.gis.geos import Polygon
-
-# Create your views here.
 from django.shortcuts import render
 from .models import *
 from django.core.serializers import serialize, json
 from django.http import HttpResponse
+import json
+
+import services
 
 
 def default_map(request):
@@ -35,3 +36,23 @@ def main_gridpage(request):
     context["grid"] = serialize('geojson', list(Res8Wgs84.objects.all()))
 
     return render(request, "default.html", context)
+
+# from django.views.decorators.csrf import csrf_exempt
+# @csrf_exempt
+
+def add_records_to_db(request):
+
+    # books_list = services.get_books('2009', 'edwards')
+    # return render(request, 'books.html', books_list)
+
+    if request.method == 'POST':
+        boundary = ""
+        dataList = json.loads(request.body)
+        for index in range(len(dataList)):
+            boundary = boundary + dataList[index]["id"]
+
+        result = services.addRecordAPIcall(boundary)
+
+    if result.status_code == 201:
+        return HttpResponse('Record Added !')
+    return HttpResponse('Error in addition !')
