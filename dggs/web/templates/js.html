@@ -62,7 +62,7 @@
     function grid8loaderFunction(extent, resolution, projection) {
         var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
 
-        console.log(extent.join(','))
+<!--        console.log(extent.join(','))-->
 
         var url = "geojsonlvl8";
         $.ajax({
@@ -91,10 +91,9 @@
     function grid9loaderFunction(extent, resolution, projection) {
         var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
 
-        console.log(extent.join(','))
+<!--        console.log(extent.join(','))-->
 
         var url = "geojsonlvl9";
-<!--        var url = getur();-->
         $.ajax({
             url: url,
             data: {
@@ -175,21 +174,22 @@
     });
 
 
-<!--    var selected = [];-->
-<!--    map.on('singleclick', function(e) {-->
-<!--      map.forEachFeatureAtPixel(e.pixel, function(f) {-->
-<!--        var selIndex = selected.indexOf(f);-->
-<!--        if (selIndex < 0) {-->
-<!--            console.log(f)-->
-<!--          selected.push(f);-->
-<!--          f.setStyle(highlightStyle);-->
-<!--        } else {-->
-<!--          selected.splice(selIndex, 1);-->
-<!--          f.setStyle(undefined);-->
-<!--        }-->
-<!--        console.log(selected)-->
-<!--      });-->
-<!--    });-->
+    var selected_cells = [];
+
+    map.on('singleclick', function(e) {
+      map.forEachFeatureAtPixel(e.pixel, function(f) {
+        var selIndex = selected_cells.indexOf(f.values_);
+        console.log(f.values_)
+        if (selIndex < 0) {
+          selected_cells.push(f.values_);
+          f.setStyle(highlightStyle);
+        } else {
+          selected_cells.splice(selIndex, 1);
+          f.setStyle(undefined);
+        }
+        console.log(selected_cells)
+      });
+    });
 
     vectorGridLayerLvl8.setVisible(false);
     vectorGridLayerLvl9.setVisible(false);
@@ -199,7 +199,7 @@
     function onMoveEnd(evt) {
         var zLevel = map.getView().getZoom();
         var zoomInfo = 'Zoom level = ' + zLevel;
-        console.log(zoomInfo);
+<!--        console.log(zoomInfo);-->
 
         if( zLevel > 11 && zLevel < 13 )
         {
@@ -223,68 +223,96 @@
     map.on('moveend', onMoveEnd);
 
 
-    /* Add drawing vector source */
-    var drawingSource = new ol.source.Vector({
-      useSpatialIndex : false
+<!--    /* Add drawing vector source */-->
+<!--    var drawingSource = new ol.source.Vector({-->
+<!--      useSpatialIndex : false-->
+<!--    });-->
+
+<!--    /* Add drawing layer */-->
+<!--    var drawingLayer = new ol.layer.Vector({-->
+<!--      source: drawingSource-->
+<!--    });-->
+<!--    map.addLayer(drawingLayer);-->
+
+<!--    /* Declare interactions and listener globally so we can attach listeners to them later. */-->
+<!--    var sketch;-->
+<!--    var draw;-->
+<!--    var listener;-->
+
+<!--    // Drawing interaction-->
+<!--    draw = new ol.interaction.Draw({-->
+<!--      source : drawingSource,-->
+<!--      type : "Point",-->
+<!--      clickTolerance:6-->
+<!--    });-->
+
+<!--    map.addInteraction(draw);-->
+
+<!--    /* add ol.collection to hold all selected features */-->
+<!--    var select = new ol.interaction.Select({ });-->
+<!--    map.addInteraction(select);-->
+<!--    var selectedFeatures = select.getFeatures();-->
+
+
+<!--    draw.on("drawstart",function(event){-->
+
+<!--        drawingSource.clear();-->
+<!--        select.setActive(false);-->
+<!--&lt;!&ndash;        selectedFeatures.clear();&ndash;&gt;-->
+<!--    },this);-->
+
+<!--    draw.on("drawend", function(event) {-->
+
+<!--&lt;!&ndash;        selectedFeatures.clear();&ndash;&gt;-->
+
+<!--        var polygon = event.feature.getGeometry();-->
+<!--        var features = activeLayer.getSource().getFeatures();-->
+
+<!--        for (var i = 0 ; i < features.length; i++){-->
+<!--        if(polygon.intersectsExtent( features[i].getGeometry().getExtent() )){-->
+<!--          selectedFeatures.push(features[i]);-->
+<!--        }-->
+<!--        }-->
+<!--        /* clear drawn polygone after selecting features */-->
+<!--        drawingLayer.clear();-->
+<!--    });-->
+
+<!--    function delaySelectActivate(){-->
+<!--      setTimeout(function(){-->
+<!--        select.setActive(true)-->
+<!--      },300);-->
+<!--    }-->
+
+
+<!-- Callback functions-->
+
+    $(function() {
+        $("#addRecordcallback").click(function(e) {
+            e.preventDefault();
+            console.log(selected_cells);
+
+            var url = "ajax/addrecordcallback/";
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify(selected_cells),
+                headers:{
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    console.log("data...")
+                },
+                error:function(xhr, ajaxOptions, thrownError) {
+                  console.log("this is error")
+                    alert(xhr.status)
+                },
+            });
+        });
     });
-
-    /* Add drawing layer */
-    var drawingLayer = new ol.layer.Vector({
-      source: drawingSource
-    });
-    map.addLayer(drawingLayer);
-
-    /* Declare interactions and listener globally so we can attach listeners to them later. */
-    var sketch;
-    var draw;
-    var listener;
-
-    // Drawing interaction
-    draw = new ol.interaction.Draw({
-      source : drawingSource,
-      type : "Polygon",
-      clickTolerance:6
-    });
-
-    map.addInteraction(draw);
-
-    /* add ol.collection to hold all selected features */
-    var select = new ol.interaction.Select({ });
-    map.addInteraction(select);
-    var selectedFeatures = select.getFeatures();
-
-
-    draw.on("drawstart",function(event){
-
-        drawingSource.clear();
-        select.setActive(false);
-        selectedFeatures.clear();
-    },this);
-
-    draw.on("drawend", function(event) {
-
-        selectedFeatures.clear();
-
-        var polygon = event.feature.getGeometry();
-        var features = activeLayer.getSource().getFeatures();
-
-        for (var i = 0 ; i < features.length; i++){
-        if(polygon.intersectsExtent( features[i].getGeometry().getExtent() )){
-          selectedFeatures.push(features[i]);
-        }
-        }
-        /* clear drawn polygone after selecting features */
-        drawingLayer.clear();
-    });
-
-    function delaySelectActivate(){
-      setTimeout(function(){
-        select.setActive(true)
-      },300);
-    }
-
 
 <!-- My addition ends here-->
+
 
 
 });
