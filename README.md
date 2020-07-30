@@ -54,4 +54,5 @@ python manage.py runserver
 
 
 ## License
-[European Union Public Licence v1.2](https://eupl.eu/1.2/en/).
+Licensor: [Advanced Information Systems Laboratory, Aragon Institute for Engineering Research, Universidad Zaragoza, Spain](https://www.iaaa.es).
+[European Union Public License v1.2](https://eupl.eu/1.2/en/).
