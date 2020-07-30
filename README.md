@@ -54,3 +54,4 @@ python manage.py runserver
 
 
 ## License
+[European Union Public Licence v1.2](https://eupl.eu/1.2/en/).
