@@ -5,8 +5,7 @@ from django.core.serializers import serialize, json
 from django.http import HttpResponse
 import json
 
-import services
-
+import rhealpix_services
 
 def default_map(request):
     return render(request, 'default.html', {})
@@ -24,7 +23,14 @@ def geojson_lvl8(request):
 
 
 def geojson_lvl9(request):
-    data_as_geojson = serialize('geojson', list(Res9Wgs84.objects.all()))
+    if request.GET.get('bbox', None):
+        bbox = request.GET.get('bbox', None).strip()
+        print("value is ", bbox)
+
+        minx, miny, maxx, maxy = [float(i) for i in bbox.split(",")]
+        extent = Polygon(((minx,miny),(minx,maxy),(maxx,maxy),(maxx,miny),(minx,miny)),  srid=4326)
+
+    data_as_geojson = serialize('geojson', list(Res9Wgs84.objects.filter(geom__bboverlaps=extent)))
     return HttpResponse(data_as_geojson, content_type='json')
 
 
@@ -47,11 +53,14 @@ def add_records_to_db(request):
 
     if request.method == 'POST':
         boundary = ""
-        dataList = json.loads(request.body)
-        for index in range(len(dataList)):
-            boundary = boundary + dataList[index]["id"]
+        gridList = json.loads(request.POST.get('grids', None))
+        commentText = request.POST.get('comment', None)
+        if not str(commentText).strip():
+            commentText = "NA"
+        for index in range(len(gridList)):
+            boundary = boundary + gridList[index]["id"]
 
-        result = services.addRecordAPIcall(boundary)
+        result = rhealpix_services.addRecordAPIcall(boundary, commentText)
 
     if result.status_code == 201:
         return HttpResponse('Record Added !')
