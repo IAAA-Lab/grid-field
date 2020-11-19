@@ -1,13 +1,18 @@
 import requests
 import json
 
-def addRecordAPIcall(boundary, commentText):
+def addRecordAPIcall(boundary, commentText, emotionsList):
 
     url = "http://127.0.0.1:8000/bdatasets/"
     params = {'id': str(generateNewID()),
-              'boundary_data_set':[{
-                "boundary": boundary,
-                "data": commentText}]
+              'boundary_data_set': [{
+                  "boundary": boundary,
+                  "data": {
+                      "comment": commentText,
+                      "emotions": emotionsList
+                  }
+
+              }]
               }
     r = requests.post(url, json=params)
     return r

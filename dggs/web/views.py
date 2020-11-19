@@ -55,13 +55,17 @@ def add_records_to_db(request):
         boundary = ""
         gridList = json.loads(request.POST.get('grids', None))
         commentText = request.POST.get('comment', None)
+        emotionsList = json.loads(request.POST.get('emotions', None))
         if not str(commentText).strip():
             commentText = "NA"
         for index in range(len(gridList)):
             boundary = boundary + gridList[index]["id"]
 
-        result = rhealpix_services.addRecordAPIcall(boundary, commentText)
+        result = rhealpix_services.addRecordAPIcall(boundary, commentText, emotionsList)
 
-    if result.status_code == 201:
-        return HttpResponse('Record Added !')
-    return HttpResponse('Error in addition !')
+    # if result.status_code == 201:
+    #     return HttpResponse('Record Added !')
+    # return HttpResponse('Error in addition !')
+
+    return HttpResponse(result.text)
+

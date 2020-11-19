@@ -202,7 +202,21 @@
         <div class="modal-body mx-3">
 
           <div class="md-form mb-5">
-            <input type="text" id="modaltextcomment" class="form-control validate">
+            <input placeholder="Enter your comment here !" type="text" id="modaltextcomment" class="form-control validate">
+          </div>
+
+          <div class="form-group">
+<!--            <label for="emotionSelectOptn">Select list:</label>-->
+
+            <select class="selectpicker form-control" multiple id="emotionSelectOptn">
+              <option disabled="disabled">Select one or many emotions !</option>
+              <option value="anger">Anger</option>
+              <option value="disgust">Disgust</option>
+              <option value="fear">Fear</option>
+              <option value="happiness">Happiness</option>
+              <option value="surprise">Surprise</option>
+              <option value="sadness">Sadness</option>
+            </select>
           </div>
 
         </div>

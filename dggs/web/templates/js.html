@@ -326,7 +326,13 @@
       $("button#btn_submit_data").click(function(e){
         e.preventDefault();
         var commentText = $( "#modaltextcomment" ).val();
+
+        var selected_options = $('#emotionSelectOptn').val();
+
+
         console.log(selected_cells);
+        console.log(selected_options);
+
         var url = "ajax/addrecordcallback/";
         $.ajax({
             url: url,
@@ -334,16 +340,18 @@
             dataType: "json",
             data:{
                     comment:commentText,
-                    grids:JSON.stringify(selected_cells)
+                    grids:JSON.stringify(selected_cells),
+                    emotions:JSON.stringify(selected_options)
                  },
             headers:{
                 "X-CSRFToken": '{{ csrf_token }}'
             },
             success: function (data) {
-                console.log("data...")
+                console.log("data added successfully")
+                alert("data added successfully")
             },
             error:function(xhr, ajaxOptions, thrownError) {
-              console.log("this is error")
+                console.log("server error")
                 alert(xhr.status)
             },
         });
