@@ -4,6 +4,7 @@ from .models import *
 from django.core.serializers import serialize, json
 from django.http import HttpResponse
 import json
+import csv
 
 import rhealpix_services
 
@@ -46,10 +47,45 @@ def main_gridpage(request):
 # from django.views.decorators.csrf import csrf_exempt
 # @csrf_exempt
 
-def add_records_to_db(request):
+def download_all_records_csv(request):
+    if request.method == 'GET':
+        import requests
+        import json
+        import re
+        import csv
+        output = []
 
-    # books_list = services.get_books('2009', 'edwards')
-    # return render(request, 'books.html', books_list)
+        url = "http://127.0.0.1:8000/bdatasets/"
+        mongo_response = requests.get(url)
+        json_response = json.loads(mongo_response.text)
+        for record in json_response:
+            row = {}
+            cells = record["boundary_data_set"][0]["boundary"]
+
+            for cell in re.findall('[A-Z][^A-Z]*', cells):
+                row["cell"] = cell
+                row["emotion"] = record["boundary_data_set"][0]["data"]["emotions"]
+                row["comment"] = record["boundary_data_set"][0]["data"]["comment"]
+                output.append(row)
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="one.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['cell', 'emotion', 'comment'])
+
+        for x in output:
+            te = [x['cell'], x['emotion'], x['comment']]
+            writer.writerow(te)
+
+        return response
+
+
+
+
+
+
+def add_records_to_db(request):
 
     if request.method == 'POST':
         boundary = ""
@@ -62,10 +98,6 @@ def add_records_to_db(request):
             boundary = boundary + gridList[index]["id"]
 
         result = rhealpix_services.addRecordAPIcall(boundary, commentText, emotionsList)
-
-    # if result.status_code == 201:
-    #     return HttpResponse('Record Added !')
-    # return HttpResponse('Error in addition !')
 
     return HttpResponse(result.text)
 

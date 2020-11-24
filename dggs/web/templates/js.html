@@ -323,39 +323,66 @@
 <!--    });-->
 
     $(document).ready(function(e) {
-      $("button#btn_submit_data").click(function(e){
-        e.preventDefault();
-        var commentText = $( "#modaltextcomment" ).val();
-
-        var selected_options = $('#emotionSelectOptn').val();
 
 
-        console.log(selected_cells);
-        console.log(selected_options);
+        $("#dwnldRecordscallbackg").click(function(e) {
+            e.preventDefault();
 
-        var url = "ajax/addrecordcallback/";
-        $.ajax({
-            url: url,
-            type: "POST",
-            dataType: "json",
-            data:{
-                    comment:commentText,
-                    grids:JSON.stringify(selected_cells),
-                    emotions:JSON.stringify(selected_options)
-                 },
-            headers:{
-                "X-CSRFToken": '{{ csrf_token }}'
-            },
-            success: function (data) {
-                console.log("data added successfully")
-                alert("data added successfully")
-            },
-            error:function(xhr, ajaxOptions, thrownError) {
-                console.log("server error")
-                alert(xhr.status)
-            },
+            var url = "ajax/dwnldrecords/";
+            $.ajax({
+                url: url,
+                type: 'GET',
+
+                success: function (data) {
+                    console.log("data received successfully")
+                    var element = document.createElement('a');
+                    element.href = 'data:text/csv;charset=utf-8,' + encodeURI(data);
+                    element.target = '_blank';
+                    element.download = 'csv_data.csv';
+                    element.click();
+                },
+                error:function(xhr, ajaxOptions, thrownError) {
+                    console.log("server error")
+                    console.log(thrownError)
+                    alert(xhr.status)
+                },
+            });
+
         });
-      });
+
+        $("button#btn_submit_data").click(function(e){
+            e.preventDefault();
+            var commentText = $( "#modaltextcomment" ).val();
+
+            var selected_options = $('#emotionSelectOptn').val();
+
+
+            console.log(selected_cells);
+            console.log(selected_options);
+
+            var url = "ajax/addrecordcallback/";
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                data:{
+                        comment:commentText,
+                        grids:JSON.stringify(selected_cells),
+                        emotions:JSON.stringify(selected_options)
+                     },
+                headers:{
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    console.log("data added successfully")
+                    alert("data added successfully")
+                },
+                error:function(xhr, ajaxOptions, thrownError) {
+                    console.log("server error")
+                    alert(xhr.status)
+                },
+            });
+        });
     });
 
 <!-- My addition ends here-->
