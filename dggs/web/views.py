@@ -4,10 +4,11 @@ from .models import *
 from django.core.serializers import serialize, json
 from django.http import HttpResponse
 import json
-import csv
+from django.contrib.auth.decorators import login_required
 
-import rhealpix_services
+from . import rhealpix_services
 
+@login_required
 def default_map(request):
     return render(request, 'default.html', {})
 
@@ -34,7 +35,7 @@ def geojson_lvl9(request):
     data_as_geojson = serialize('geojson', list(Res9Wgs84.objects.filter(geom__bboverlaps=extent)))
     return HttpResponse(data_as_geojson, content_type='json')
 
-
+@login_required
 def main_gridpage(request):
     print(" IN Main_giridpage")
     context = {
