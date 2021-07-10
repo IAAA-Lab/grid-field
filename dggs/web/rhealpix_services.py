@@ -23,6 +23,9 @@ def generateNewID():
     r = requests.get(url)
     id = json.loads(r.content)["id"]
     print(id)
-    id = id.split('_')[0] + "_" + str(int(id.split('_')[1]) + 1)
+    if len(id) == 0:
+        id = "id_1"
+    else:
+        id = id.split('_')[0] + "_" + str(int(id.split('_')[1]) + 1)
     print(id)
     return id
