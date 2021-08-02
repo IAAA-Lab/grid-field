@@ -1,10 +1,12 @@
 import requests
 import json
+from .versioning import gitversioning as versioning
 
 def addRecordAPIcall(boundary, commentText, emotionsList):
 
     url = "http://127.0.0.1:8000/bdatasets/"
-    params = {'id': str(generateNewID()),
+    id = str(generateNewID())
+    params = {'id': id,
               'boundary_data_set': [{
                   "boundary": boundary,
                   "data": {
@@ -15,6 +17,8 @@ def addRecordAPIcall(boundary, commentText, emotionsList):
               }]
               }
     r = requests.post(url, json=params)
+    if r.status_code == 201:
+        versioning.save_record_to_git(params, id)
     return r
 
 

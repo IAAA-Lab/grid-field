@@ -1,6 +1,6 @@
 from django.conf.urls import url
-
 from . import views
+from .versioning import gitversioning
 
 urlpatterns = [
     url(r'^$', views.main_gridpage, name="default"),
@@ -9,3 +9,6 @@ urlpatterns = [
     url(r'^ajax/addrecordcallback/$', views.add_records_to_db, name='addrecordcallback'),
     url(r'^ajax/dwnldrecords/$', views.download_all_records_csv, name='downloadrecords')
 ]
+
+gitversioning.setup_up_version_repo()
+
