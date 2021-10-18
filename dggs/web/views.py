@@ -35,6 +35,30 @@ def geojson_lvl9(request):
     data_as_geojson = serialize('geojson', list(Res9Wgs84.objects.filter(geom__bboverlaps=extent)))
     return HttpResponse(data_as_geojson, content_type='json')
 
+
+def geojson_lvl10(request):
+    if request.GET.get('bbox', None):
+        bbox = request.GET.get('bbox', None).strip()
+        print("value is ", bbox)
+
+        minx, miny, maxx, maxy = [float(i) for i in bbox.split(",")]
+        extent = Polygon(((minx,miny),(minx,maxy),(maxx,maxy),(maxx,miny),(minx,miny)),  srid=4326)
+
+    data_as_geojson = serialize('geojson', list(Res10Wgs84.objects.filter(geom__bboverlaps=extent)))
+    return HttpResponse(data_as_geojson, content_type='json')
+
+
+def geojson_lvl11(request):
+    if request.GET.get('bbox', None):
+        bbox = request.GET.get('bbox', None).strip()
+        print("value is ", bbox)
+
+        minx, miny, maxx, maxy = [float(i) for i in bbox.split(",")]
+        extent = Polygon(((minx,miny),(minx,maxy),(maxx,maxy),(maxx,miny),(minx,miny)),  srid=4326)
+
+    data_as_geojson = serialize('geojson', list(Res11Wgs84.objects.filter(geom__bboverlaps=extent)))
+    return HttpResponse(data_as_geojson, content_type='json')
+
 @login_required
 def main_gridpage(request):
     print(" IN Main_giridpage")

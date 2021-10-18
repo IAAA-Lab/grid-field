@@ -116,6 +116,62 @@
         });
     }
 
+    function grid10loaderFunction(extent, resolution, projection) {
+        var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
+
+        console.log(extent.join(','))
+
+        var url = "geojsonlvl10";
+        $.ajax({
+            url: url,
+            data: {
+			  'bbox':  extent.join(',')
+			},
+			dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                var features = geoJsonFormat.readFeatures(data, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: 'EPSG:4326'
+                });
+                vectorSource10.clear(true);
+                vectorSource10.addFeatures(features);
+            },
+            error:function(xhr, ajaxOptions, thrownError) {
+              console.log("this is error")
+                alert(xhr.status)
+            },
+        });
+    }
+
+    function grid11loaderFunction(extent, resolution, projection) {
+        var extent = ol.proj.transformExtent(extent, projection.getCode(), ol.proj.get('EPSG:4326').getCode());
+
+        console.log(extent.join(','))
+
+        var url = "geojsonlvl11";
+        $.ajax({
+            url: url,
+            data: {
+			  'bbox':  extent.join(',')
+			},
+			dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                var features = geoJsonFormat.readFeatures(data, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: 'EPSG:4326'
+                });
+                vectorSource11.clear(true);
+                vectorSource11.addFeatures(features);
+            },
+            error:function(xhr, ajaxOptions, thrownError) {
+              console.log("this is error")
+                alert(xhr.status)
+            },
+        });
+    }
+
 
     vectorSource8 = new ol.source.Vector({
       format: geoJsonFormat,
@@ -136,6 +192,20 @@
 <!--                }-->
     });
 
+    vectorSource10 = new ol.source.Vector({
+      format: geoJsonFormat,
+      loader: grid10loaderFunction,
+      projection: 'EPSG:4326',
+      strategy: ol.loadingstrategy.bbox
+    });
+
+    vectorSource11 = new ol.source.Vector({
+      format: geoJsonFormat,
+      loader: grid11loaderFunction,
+      projection: 'EPSG:4326',
+      strategy: ol.loadingstrategy.bbox
+    });
+
     var vectorGridLayerLvl8 =  new ol.layer.Vector({
 <!--      minZoom: 11,-->
 <!--      maxZoom:13,-->
@@ -148,6 +218,14 @@
 <!--      maxZoom:15,-->
       source: vectorSource9
 <!--      renderBuffer: 600-->
+    })
+
+    var vectorGridLayerLvl10 =  new ol.layer.Vector({
+      source: vectorSource10
+    })
+
+    var vectorGridLayerLvl11 =  new ol.layer.Vector({
+      source: vectorSource11
     })
 
 
@@ -165,7 +243,7 @@
     var map = new ol.Map({
     moveTolerance:6,
     target: 'map',
-    layers: [rasterBaseMapOSM, vectorGridLayerLvl8, vectorGridLayerLvl9],
+    layers: [rasterBaseMapOSM, vectorGridLayerLvl8, vectorGridLayerLvl9, vectorGridLayerLvl10, vectorGridLayerLvl11],
     view: new ol.View({
         center: [-2.206132113948761,41.13498145407611],
         zoom: 7,
@@ -194,6 +272,8 @@
 
     vectorGridLayerLvl8.setVisible(false);
     vectorGridLayerLvl9.setVisible(false);
+    vectorGridLayerLvl10.setVisible(false);
+    vectorGridLayerLvl11.setVisible(false);
 
     var activeLayer;
     var currentZoom = map.getView().getZoom();
@@ -211,6 +291,8 @@
             {
                 vectorGridLayerLvl8.setVisible(true);
                 vectorGridLayerLvl9.setVisible(false);
+                vectorGridLayerLvl10.setVisible(false);
+                vectorGridLayerLvl11.setVisible(false);
                 activeLayer = vectorGridLayerLvl8;
                 selected_cells.length = 0;
             }
@@ -218,13 +300,35 @@
             {
                 vectorGridLayerLvl9.setVisible(true);
                 vectorGridLayerLvl8.setVisible(false);
+                vectorGridLayerLvl10.setVisible(false);
+                vectorGridLayerLvl11.setVisible(false);
                 activeLayer = vectorGridLayerLvl9;
+                selected_cells.length = 0;
+            }
+            else if( newZoom >= 15 && newZoom < 17 )
+            {
+                vectorGridLayerLvl10.setVisible(true);
+                vectorGridLayerLvl8.setVisible(false);
+                vectorGridLayerLvl9.setVisible(false);
+                vectorGridLayerLvl11.setVisible(false);
+                activeLayer = vectorGridLayerLvl10;
+                selected_cells.length = 0;
+            }
+            else if( newZoom >= 17 && newZoom < 19 )
+            {
+                vectorGridLayerLvl10.setVisible(false);
+                vectorGridLayerLvl8.setVisible(false);
+                vectorGridLayerLvl9.setVisible(false);
+                vectorGridLayerLvl11.setVisible(true);
+                activeLayer = vectorGridLayerLvl10;
                 selected_cells.length = 0;
             }
             else
             {
                 vectorGridLayerLvl8.setVisible(false);
                 vectorGridLayerLvl9.setVisible(false);
+                vectorGridLayerLvl10.setVisible(false);
+                vectorGridLayerLvl11.setVisible(false);
                 selected_cells.length = 0;
             }
         }
