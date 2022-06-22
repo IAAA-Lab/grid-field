@@ -18,7 +18,7 @@ kiwisolver==1.2.0
 matplotlib==3.2.2
 munch==2.5.0
 networkx==2.4
-numpy==1.18.2
+numpy==1.22.0
 psycopg2==2.8.4
 pymongo==3.11.0
 pyparsing==2.4.7
