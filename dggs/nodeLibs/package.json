@@ -1,0 +1,23 @@
+{
+  "name": "nodelibs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@y/websocket-server": "^0.1.1",
+    "level": "^10.0.0",
+    "ws": "^8.18.3",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.27"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4"
+  }
+}

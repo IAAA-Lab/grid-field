@@ -204,3 +204,10 @@ fabric.properties
 **/migrations/**
 !**/migrations
 !**/migrations/__init__.py
+
+# Node dependencies
+dggs/nodeLibs/node_modules/
+node_modules/
+
+.idea/
+dggs/data/

@@ -17,8 +17,8 @@ def addRecordAPIcall(boundary, commentText, emotionsList):
               }]
               }
     r = requests.post(url, json=params)
-    if r.status_code == 201:
-        versioning.save_record_to_git(params, id)
+    # if r.status_code == 201:
+    #     versioning.save_record_to_git(params, id)
     return r
 
 

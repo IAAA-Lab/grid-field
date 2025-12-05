@@ -8,20 +8,20 @@ from django.contrib.auth.decorators import login_required
 
 from . import rhealpix_services
 
-@login_required
-def default_map(request):
-    return render(request, 'default.html', {})
+# @login_required
+# def default_map(request):
+#     return render(request, 'default.html', {})
 
 def geojson_lvl8(request):
     if request.GET.get('bbox', None):
         bbox = request.GET.get('bbox', None).strip()
-        print("value is ", bbox)
+        print("geojson_lvl8: value is ", bbox)
 
         minx, miny, maxx, maxy = [float(i) for i in bbox.split(",")]
         extent = Polygon(((minx,miny),(minx,maxy),(maxx,maxy),(maxx,miny),(minx,miny)),  srid=4326)
 
-    data_as_geojson = serialize('geojson', list(Res8Wgs84.objects.filter(geom__bboverlaps=extent)))
-    return HttpResponse(data_as_geojson, content_type='json')
+    data_as_geojson = serialize('geojson', Res8Wgs84.objects.filter(geom__bboverlaps=extent)[:20])
+    return HttpResponse(data_as_geojson, content_type='geojson')
 
 
 def geojson_lvl9(request):
@@ -61,11 +61,11 @@ def geojson_lvl11(request):
 
 @login_required
 def main_gridpage(request):
-    print(" IN Main_giridpage")
+
     context = {
         "grid": [],
     }
-    context["grid"] = serialize('geojson', list(Res8Wgs84.objects.all()))
+    context["grid"] = serialize('geojson', list(Res8Wgs84.objects.all()[:20]))
 
     return render(request, "default.html", context)
 

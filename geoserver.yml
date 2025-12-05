@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  geoserver:
+    image: kartoza/geoserver:2.27.2
+    container_name: geoserver
+    ports:
+      - "8600:8080"
+    networks:
+      - grid-field_default
+    environment:
+      GEOSERVER_ADMIN_USER: admin
+      GEOSERVER_ADMIN_PASSWORD: geoserver
+    volumes:
+      - geoserver_data:/opt/geoserver/data_dir
+volumes:
+  geoserver_data:
+networks:
+  grid-field_default:
+    external: true
+

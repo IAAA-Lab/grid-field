@@ -1,35 +1,47 @@
-affine==2.3.0
-asgiref==3.2.7
-attrs==19.3.0
-bson==0.5.9
-certifi==2019.11.28
-chardet==3.0.4
-click==7.1.2
-click-plugins==1.1.1
-cligj==0.5.0
-cycler==0.10.0
-decorator==4.4.2
-Django==3.0.4
-djangorestframework==3.11.0
-Fiona==1.8.13.post1
-geomet==0.2.1.post1
-idna==2.9
-kiwisolver==1.2.0
-matplotlib==3.2.2
-munch==2.5.0
-networkx==2.4
-numpy==1.18.2
-psycopg2==2.8.4
-pymongo==3.11.0
-pyparsing==2.4.7
-pyproj==2.6.0
-pyshp==2.1.0
-python-dateutil==2.8.1
-pytz==2019.3
-rasterio==1.1.5
-requests==2.23.0
-Shapely==1.7.0
-six==1.15.0
+affine==2.4.0
+asgiref==3.10.0
+attrs @ file:///home/conda/feedstock_root/build_artifacts/attrs_1759762205280/work
+bson==0.5.10
+certifi==2025.10.5
+chardet==5.2.0
+charset-normalizer==3.4.3
+click @ file:///home/conda/feedstock_root/build_artifacts/click_1758270398201/work
+click-plugins @ file:///home/conda/feedstock_root/build_artifacts/click-plugins_1750848229740/work
+cligj @ file:///home/conda/feedstock_root/build_artifacts/cligj_1733749956636/work
+contourpy @ file:///home/conda/feedstock_root/build_artifacts/contourpy_1756544610447/work
+cycler @ file:///home/conda/feedstock_root/build_artifacts/cycler_1733332471406/work
+decorator==5.2.1
+Django==5.2.7
+djangorestframework==3.16.1
+dnspython==2.8.0
+fiona @ file:///home/conda/feedstock_root/build_artifacts/fiona_1733507391647/work
+fonttools @ file:///home/conda/feedstock_root/build_artifacts/fonttools_1759187078489/work
+GDAL @ file:///home/conda/feedstock_root/build_artifacts/libgdal-core_1759340332044/work/build/swig/python
+geomet==1.1.0
+idna==3.10
+kiwisolver @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_kiwisolver_1756467524/work
+matplotlib==3.10.6
+munch==4.0.0
+munkres==1.1.4
+networkx==3.5
+numpy @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_numpy_1757505084/work/dist/numpy-2.3.3-cp311-cp311-linux_x86_64.whl#sha256=2d3fbc34385a8392694343e1dbf8ce5eb8418fa3b60a233e97d658500271c908
+packaging @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_packaging_1745345660/work
+pillow @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pillow_1758208668/work
+psycopg2==2.9.10
+pymongo==4.15.3
+pyparsing @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pyparsing_1758436411/work
+pyproj==3.7.2
+pyshp==2.3.1
+PySide6==6.9.3
+python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_python-dateutil_1751104122/work
+pytz==2025.2
+rasterio==1.4.3
+requests==2.32.5
+shapely @ file:///home/conda/feedstock_root/build_artifacts/shapely_1758735220432/work
+shiboken6==6.9.3
+six @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_six_1753199211/work
 snuggs==1.4.7
-sqlparse==0.3.0
-urllib3==1.25.9
+sqlparse==0.5.3
+tornado @ file:///home/conda/feedstock_root/build_artifacts/tornado_1756854923821/work
+unicodedata2 @ file:///home/conda/feedstock_root/build_artifacts/unicodedata2_1756494475418/work
+urllib3==2.5.0
